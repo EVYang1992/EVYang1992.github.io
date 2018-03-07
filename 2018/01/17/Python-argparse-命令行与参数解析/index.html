@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,argparse,命令行解析," />
+
+
+
+
+
+  <link rel="alternate" href="/rss.xml" title="Eagle" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="Python 命令行与参数解析方法有很多工具，本文使用python 自带的argparse 来说明python 如何进行命令行解析。">
+<meta name="keywords" content="python,argparse,命令行解析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python argparse 命令行与参数解析">
+<meta property="og:url" content="https://evyang1992.github.io/2018/01/17/Python-argparse-命令行与参数解析/index.html">
+<meta property="og:site_name" content="Eagle">
+<meta property="og:description" content="Python 命令行与参数解析方法有很多工具，本文使用python 自带的argparse 来说明python 如何进行命令行解析。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-18T00:04:16.379Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python argparse 命令行与参数解析">
+<meta name="twitter:description" content="Python 命令行与参数解析方法有很多工具，本文使用python 自带的argparse 来说明python 如何进行命令行解析。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://evyang1992.github.io/2018/01/17/Python-argparse-命令行与参数解析/"/>
+
+
+
+
+
+  <title>Python argparse 命令行与参数解析 | Eagle</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eagle</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一个走偏了的汽车工程师</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://evyang1992.github.io/2018/01/17/Python-argparse-命令行与参数解析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Devin Yang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eagle">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python argparse 命令行与参数解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-17T22:03:35+01:00">
+                2018-01-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,205
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  10
+                </span>
+              
+            </div>
+          
+
+          
+              <div class="post-description">
+                  Python 命令行与参数解析方法有很多工具，本文使用python 自带的argparse 来说明python 如何进行命令行解析。
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p class="description"></p>
+
+<a id="more"></a>
+<h2 id="什么是命令行与参数解析？"><a href="#什么是命令行与参数解析？" class="headerlink" title="什么是命令行与参数解析？"></a>什么是命令行与参数解析？</h2><p>通俗来说，命令行与参数解析就是当你输入cmd 打开dos 交互界面时候，启动程序要进行的参数给定。比如在dos 界面输入：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python openPythonFile.py <span class="string">"a"</span> -b <span class="string">"number"</span></span><br></pre></td></tr></table></figure></p>
+<p>其中的”a”， -b 等就是命令行与参数解析要做的事。<br><del><em>这在windows 系统下用处不是特别大，因为windows 下各种编译器，你根本不需要在dos 界面下去执行python 脚本。但是在linux 系统下，你几乎要总是考虑命令行解析。</em></del><br>和操作系统无关，就是设计程序在运行时必须给定某些额外参数才能运行，也就是如果设置了命令行参数解析，那么各种编译器按F5 是无法直接运行程序的。用途，就是不能随便就能运行脚本，可以达到一定程度上的安全功能。  </p>
+<h2 id="Python-命令行与参数解析使用步骤"><a href="#Python-命令行与参数解析使用步骤" class="headerlink" title="Python 命令行与参数解析使用步骤"></a>Python 命令行与参数解析使用步骤</h2><ul>
+<li>创建解析  </li>
+<li>添加参数  </li>
+<li>解析参数  </li>
+</ul>
+<p>下面通过一个例子进行简单创建：<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="comment"># 创建解析步骤</span></span><br><span class="line">parser = argparse.ArgumentParser(description=<span class="string">'Process some integers.'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加参数步骤</span></span><br><span class="line">parser.add_argument(<span class="string">'integers'</span>, metavar=<span class="string">'N'</span>, type=int, nargs=<span class="string">'+'</span>,</span><br><span class="line">                   help=<span class="string">'an integer for the accumulator'</span>)</span><br><span class="line">parser.add_argument(<span class="string">'--sum'</span>, dest=<span class="string">'accumulate'</span>, action=<span class="string">'store_const'</span>,</span><br><span class="line">                   const=sum, default=max,</span><br><span class="line">                   help=<span class="string">'sum the integers'</span>)</span><br><span class="line"><span class="comment"># 解析参数步骤  </span></span><br><span class="line">args = parser.parse_args()</span><br><span class="line">print(args.accumulate(args.integers))</span><br></pre></td></tr></table></figure></p>
+<p>在dos 界面执行：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python 命令行与参数解析.py -h</span><br></pre></td></tr></table></figure></p>
+<p>运行结果：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">usage: 命令行与参数解析.py [-h] [--sum] N [N ...]</span><br><span class="line">Process some integers.</span><br><span class="line">positional arguments:</span><br><span class="line">  N           an <span class="built_in">integer</span> <span class="keyword">for</span> the accumulator</span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --<span class="built_in">help</span>  show this <span class="built_in">help</span> message and <span class="built_in">exit</span></span><br><span class="line">  --sum       sum the integers</span><br></pre></td></tr></table></figure></p>
+<h2 id="每个步骤的参数设定"><a href="#每个步骤的参数设定" class="headerlink" title="每个步骤的参数设定"></a>每个步骤的参数设定</h2><h3 id="创建解析过程参数设定"><a href="#创建解析过程参数设定" class="headerlink" title="创建解析过程参数设定"></a>创建解析过程参数设定</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ArgumentParser(prog='', usage=None, description='Process some integers.', version=None, formatter_class=&lt;class 'argparse.HelpFormatter'&gt;, conflict_handler='error', add_help=True)</span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">parser = argparse.ArgumentParser(description=<span class="string">'Process some integers.'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>prog（不建议更改）</strong><br>程序名称(默认sys.argv[0]，默认为函数文件名)，设置prog 则改变这一默认（仍使用上面那个实例）：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 变更参数</span></span><br><span class="line">parser = argparse.ArgumentParser(prog=<span class="string">'sum or max'</span>,description=<span class="string">'Process some integers.'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#运行结果</span></span><br><span class="line"><span class="comment">#原始</span></span><br><span class="line">usage: 命令行与参数解析.py [-h] [--sum] N [N ...]</span><br><span class="line"><span class="comment">#变更后</span></span><br><span class="line">usage: sum <span class="keyword">or</span> max [-h] [--sum] N [N ...]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>usage（不建议更改）</strong><br>用于描述程序的使用用法（默认为添加到解析器中的参数）。在使用<code>python xxx.py -h</code>之后将出现。看例子：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 变更参数</span></span><br><span class="line">parser = argparse.ArgumentParser(usage=<span class="string">'python 命令行与参数解析.py arguments'</span>,description=<span class="string">'Process some integers.'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#运行结果</span></span><br><span class="line"><span class="comment">#原始</span></span><br><span class="line">usage: 命令行与参数解析.py [-h] [--sum] N [N ...]</span><br><span class="line"><span class="comment">#变更后</span></span><br><span class="line">usage: python 命令行与参数解析.py arguments</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>description</strong><br>描述文件，上面实例已体现。</p>
+</li>
+<li><p><strong>epilog</strong><br>参数选项帮助后的显示文本。看例子：  </p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 变更参数</span></span><br><span class="line">epilog=<span class="string">'And What can I help U?'</span></span><br><span class="line"><span class="comment"># 运行结果</span></span><br><span class="line">optional arguments:</span><br><span class="line">  -h, --help  show this help message <span class="keyword">and</span> exit</span><br><span class="line">  --sum       sum the intergers</span><br><span class="line">And What can I help U?</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>parents</strong><br>共享同一个父类解析器，由ArgumentParser对象组成的列表，它们的arguments选项会被包含到新ArgumentParser对象中，类似于继承。</p>
+</li>
+<li><p><strong>formatter_class（没必要改变）</strong><br>help信息输出格式共有三种形式：</p>
+<ol>
+<li>argparse.RawDescriptionHelpFormatter：以输入格式输出，并不将其合并为一行</li>
+<li>argparse.RawTextHelpFormatter：所有信息以输入格式输出，并不将其合并为一行</li>
+<li>argparse.ArgumentDefaultsHelpFormatter：输出参数的defalut值</li>
+</ol>
+</li>
+<li><p><strong>prefix_chars（不建议改变）</strong><br>参数前缀，默认为’-‘。前缀字符，放在文件名之前。当参数过多时，可以将参数放在文件中读取。看例子：  </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">with</span> open(<span class="string">'args.txt'</span>, <span class="string">'w'</span>) <span class="keyword">as</span> fp:</span><br><span class="line"><span class="meta">... </span>   fp.write(<span class="string">'-f\nbar'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser(fromfile_prefix_chars=<span class="string">'@'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'-f'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args([<span class="string">'-f'</span>, <span class="string">'tmp'</span>, <span class="string">'@args.txt'</span>])</span><br><span class="line">Namespace(f=<span class="string">'bar'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>例子中parser.parse_args([‘-f’, ‘foo’, ‘@args.txt’])解析时会从文件args.txt 读取，相当于 [‘-f’, ‘foo’, ‘-f’, ‘bar’]  </p>
+<ul>
+<li><p><strong>conflict_handler(最好不要修改)</strong><br>解决冲突的策略，默认情况下冲突会发生错误。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser(prog=<span class="string">'PROG'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'-f'</span>, <span class="string">'--foo'</span>, help=<span class="string">'old foo help'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'--foo'</span>, help=<span class="string">'new foo help'</span>)</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line"> ..</span><br><span class="line">ArgumentError: argument --foo: conflicting option string(s): --foo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>add_help（不建议修改）</strong><br>是否增加-h/-help选项 (默认为True)，一般help信息都是必须的。设为False时，help信息里面不再显示-h –help信息。  </p>
+</li>
+<li><p><strong>argument_default</strong><br>设置一个全局的选项的缺省值，一般每个选项单独设置，基本没用。缺省为：None。</p>
+</li>
+</ul>
+<h3 id="添加参数过程参数设定"><a href="#添加参数过程参数设定" class="headerlink" title="添加参数过程参数设定"></a>添加参数过程参数设定</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ArgumentParser.add_argument(name <span class="keyword">or</span> flags...[, action][, nargs][, const][, default][, type][, choices][, required][, help][, metavar][, dest])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">parser.add_argument(<span class="string">'intergers'</span>,metavar=<span class="string">'N'</span>,type=int,nargs=<span class="string">'+'</span>,help=<span class="string">'an interger for the accumulator'</span>)</span><br><span class="line">parser.add_argument(<span class="string">'--sum'</span>,dest=<span class="string">'accumulate'</span>,action=<span class="string">'store_const'</span>,const=sum,default=max,help=<span class="string">'sum the intergers (default:find the max)'</span>)</span><br></pre></td></tr></table></figure>
+<p>知识点：</p>
+<ul>
+<li>每一个参数都要单独设置，就像上面例子，需要两个参数就用两个<em>add_argument</em> 。</li>
+<li>从上面的实例中也可以看到，参数分为两种：<em>positional arguments</em> 和<em>optional arguments</em> 。</li>
+<li><em>positional arguments</em> 参数按照参数设置的先后顺序对应读取，实际中不用设置参数名，必须有序设计。</li>
+<li><em>optional arguments</em> 参数在使用时必须使用参数名，然后是参数具体数值，设置可以是无序的。</li>
+<li>程序根据<em>prefix_chars(默认”-“)</em>自动识别<em>positional arguments</em> 还是<em>optional arguments</em>。  </li>
+<li><em>prefix_chars</em> 分为缩写(比如”-<em>h</em>“)和对应的全程(比如”–<em>help</em>“)，可以同时设置</li>
+</ul>
+<p>参数设定详细解释：  </p>
+<ul>
+<li><p><strong>name or flag</strong><br>optional arguments以’-‘为前缀的参数，其他的为positional arguments。上面例子已经有体现如何设定。</p>
+</li>
+<li><p><strong>action</strong><br>命令行参数的操作，操作的形式有以下几种：  </p>
+<ol>
+<li>store:仅仅存储参数的值（默认）</li>
+<li><p>store_const:存储const关键字指定的值</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parser.add_argument(<span class="string">'-t'</span>,action=<span class="string">'store_const'</span>,const=<span class="number">7</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>store_true/store_false:值为True/False</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">parser.add_argument(<span class="string">'-t'</span>,action=<span class="string">'store_truet'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>append:值追加到list中（<strong>普通的store 和append 不是一样的？</strong>）</p>
+</li>
+<li>append_const: 存为列表，会根据const关键参数进行添加<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'--str'</span>, dest=<span class="string">'types'</span>, action=<span class="string">'append_const'</span>, const=str)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'--int'</span>, dest=<span class="string">'types'</span>, action=<span class="string">'append_const'</span>, const=int)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args(<span class="string">'--str --int --str --int'</span>.split())</span><br><span class="line">Namespace(l=<span class="keyword">None</span>, types=[&lt;type <span class="string">'str'</span>&gt;, &lt;type <span class="string">'int'</span>&gt;, &lt;type <span class="string">'str'</span>&gt;, &lt;type <span class="string">'int'</span>&gt;])</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p><strong>count</strong><br>统计参数出现的次数</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'--counte'</span>, <span class="string">'-c'</span>, action=<span class="string">'count'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args(<span class="string">'-cccc'</span>.split())</span><br><span class="line">Namespace(counte=<span class="number">4</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>help</strong><br>显示help信息  </p>
+</li>
+<li><p><strong>version</strong><br>显示version信息  </p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'--version'</span>, action=<span class="string">'version'</span>, version=<span class="string">'version 2.0'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args([<span class="string">'--version'</span>])</span><br><span class="line">version <span class="number">2.0</span></span><br><span class="line">```   </span><br><span class="line"></span><br><span class="line">+ **nrgs**  </span><br><span class="line">参数的数量，有如下几个设定：  </span><br><span class="line">  <span class="number">1.</span> N：N个参数</span><br><span class="line">  2. ?:首先从命令行中获取，若没有则从const中获取，仍然没有则从default中获取</span><br><span class="line">  <span class="number">3.</span> */+:任意多个参数</span><br><span class="line"></span><br><span class="line">+ **const** </span><br><span class="line">保存为一个常量，上面在讲**action** 行为时已经解释用法。  </span><br><span class="line"></span><br><span class="line">+ **default**  </span><br><span class="line">默认值</span><br><span class="line"></span><br><span class="line">+ **type**</span><br><span class="line">参数类型，默认为str</span><br><span class="line"></span><br><span class="line">+ **choices**  </span><br><span class="line">设置参数值的范围，如果choices中的类型不是字符串，记得指定type。看例子：  </span><br><span class="line">```py</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'x'</span>, type=int, choices=range(<span class="number">1</span>, <span class="number">4</span>))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args([<span class="string">'3'</span>])</span><br><span class="line">Namespace(x=<span class="number">3</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args([<span class="string">'4'</span>])</span><br><span class="line">usage: [-h] &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;</span><br><span class="line">: error: argument x: invalid choice: <span class="number">4</span> (choose <span class="keyword">from</span> <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">+ **required**  </span><br><span class="line">是否为必选参数，默认为<span class="keyword">True</span></span><br><span class="line"></span><br><span class="line">+ **desk**  </span><br><span class="line">参数别名，看例子：  </span><br><span class="line">```py</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'--foo'</span>, dest=<span class="string">'f_name'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.parse_args(<span class="string">'--foo XXX'</span>.split())</span><br><span class="line">Namespace(f_name=<span class="string">'XXX'</span>)</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">+ **help**</span><br><span class="line">参数的帮助信息，即解释信息</span><br><span class="line"></span><br><span class="line">+ **metavar**  </span><br><span class="line">帮助信息中显示的参数名称</span><br><span class="line"></span><br><span class="line"><span class="comment">### 解析参数过程参数设定</span></span><br><span class="line">```py</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser = argparse.ArgumentParser()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>parser.add_argument(<span class="string">'x'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = parser.parse_args([<span class="string">'1'</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>a</span><br><span class="line">Namespace(x=<span class="string">'1'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>type(a)</span><br><span class="line">&lt;<span class="class"><span class="keyword">class</span> '<span class="title">argparse</span>.<span class="title">Namespace</span>'&gt;</span></span><br><span class="line"><span class="class">&gt;&gt;&gt; <span class="title">a</span>.<span class="title">x</span></span></span><br><span class="line"><span class="class">'1'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="一个完整的例子"><a href="#一个完整的例子" class="headerlink" title="一个完整的例子"></a>一个完整的例子</h2><blockquote>
+<p>filename = argv_argparse.py<br><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">cmd</span><span class="params">()</span>:</span></span><br><span class="line">    args = argparse.ArgumentParser(description = <span class="string">'Personal Information '</span>,epilog = <span class="string">'Information end '</span>)</span><br><span class="line">    <span class="comment">#必写属性,第一位</span></span><br><span class="line">    args.add_argument(<span class="string">"name"</span>,         type = str,                  help = <span class="string">"Your name"</span>)</span><br><span class="line">    <span class="comment">#必写属性,第二位</span></span><br><span class="line">    args.add_argument(<span class="string">"birth"</span>,        type = str,                  help = <span class="string">"birthday"</span>)</span><br><span class="line">    <span class="comment">#可选属性,默认为None</span></span><br><span class="line">    args.add_argument(<span class="string">"-r"</span>,<span class="string">'--race'</span>,  type = str, dest = <span class="string">"race"</span>,   help = <span class="string">u"民族"</span>)</span><br><span class="line">    <span class="comment">#可选属性,默认为0,范围必须在0~150</span></span><br><span class="line">    args.add_argument(<span class="string">"-a"</span>, <span class="string">"--age"</span>,  type = int, dest = <span class="string">"age"</span>,    help = <span class="string">"Your age"</span>,         default = <span class="number">0</span>,      choices=range(<span class="number">150</span>))</span><br><span class="line">    <span class="comment">#可选属性,默认为male</span></span><br><span class="line">    args.add_argument(<span class="string">'-s'</span>,<span class="string">"--sex"</span>,   type = str, dest = <span class="string">"sex"</span>,    help = <span class="string">'Your sex'</span>,         default = <span class="string">'male'</span>, choices=[<span class="string">'male'</span>, <span class="string">'female'</span>])</span><br><span class="line">    <span class="comment">#可选属性,默认为None,-p后可接多个参数</span></span><br><span class="line">    args.add_argument(<span class="string">"-p"</span>,<span class="string">"--parent"</span>,type = str, dest = <span class="string">'parent'</span>, help = <span class="string">"Your parent"</span>,      default = <span class="string">"None"</span>, nargs = <span class="string">'*'</span>)</span><br><span class="line">    <span class="comment">#可选属性,默认为None,-o后可接多个参数</span></span><br><span class="line">    args.add_argument(<span class="string">"-o"</span>,<span class="string">"--other"</span>, type = str, dest = <span class="string">'other'</span>,  help = <span class="string">"other Information"</span>,required = <span class="keyword">False</span>,nargs = <span class="string">'*'</span>)</span><br><span class="line"></span><br><span class="line">    args = args.parse_args()<span class="comment">#返回一个命名空间,如果想要使用变量,可用args.attr</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"argparse.args="</span>,args,type(args)</span><br><span class="line">    <span class="keyword">print</span> <span class="string">'name = %s'</span>%args.name</span><br><span class="line">    d = args.__dict__</span><br><span class="line">    <span class="keyword">for</span> key,value <span class="keyword">in</span> d.iteritems():</span><br><span class="line">        <span class="keyword">print</span> <span class="string">'%s = %s'</span>%(key,value)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__==<span class="string">"__main__"</span>:</span><br><span class="line">    cmd()</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>dos输入命令示例:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python argv_argparse.py -h</span><br><span class="line">python argv_argparse.py xiaoming 1991.11.11</span><br><span class="line">python argv_argparse.py xiaoming 1991.11.11 -p xiaohong xiaohei -a 25 -r han -s female -o 1 2 3 4 5 6</span><br></pre></td></tr></table></figure></p>
+<hr>
+      
+    </div>
+    
+    
+    
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/argparse/" rel="tag"><i class="fa fa-tag"></i> argparse</a>
+          
+            <a href="/tags/命令行解析/" rel="tag"><i class="fa fa-tag"></i> 命令行解析</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+			<div style="color: rgba(0, 0, 0, 0.75); font-size:13px; letter-spacing:3px">(&gt;请对本文进行评分&lt;)</div>
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/16/图像数据预处理/" rel="next" title="图像数据预处理">
+                <i class="fa fa-chevron-left"></i> 图像数据预处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/20/深度神经网络中一些基本概念/" rel="prev" title="深度神经网络中一些基本概念">
+                深度神经网络中一些基本概念 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="uyan_frame"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Devin Yang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/EVYang1992" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:devin.yang.auto@gmail.com" target="_blank" title="Email">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>Email</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/yang-yue-1992" target="_blank" title="ZhiHu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是命令行与参数解析？"><span class="nav-number">1.</span> <span class="nav-text">什么是命令行与参数解析？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Python-命令行与参数解析使用步骤"><span class="nav-number">2.</span> <span class="nav-text">Python 命令行与参数解析使用步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#每个步骤的参数设定"><span class="nav-number">3.</span> <span class="nav-text">每个步骤的参数设定</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建解析过程参数设定"><span class="nav-number">3.1.</span> <span class="nav-text">创建解析过程参数设定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#添加参数过程参数设定"><span class="nav-number">3.2.</span> <span class="nav-text">添加参数过程参数设定</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一个完整的例子"><span class="nav-number">4.</span> <span class="nav-text">一个完整的例子</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-car"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Devin Yang</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2152266"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 9025#<app_id>,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+</body>
+</html>

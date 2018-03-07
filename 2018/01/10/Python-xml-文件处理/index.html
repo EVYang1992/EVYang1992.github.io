@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,xml,ElementTree," />
+
+
+
+
+
+  <link rel="alternate" href="/rss.xml" title="Eagle" type="application/atom+xml" />
+
+
+
+
+
+
+<meta name="description" content="关于XML 的起源和发展参考：XML XML 学习参考： XML 学习 使用Python ElementTree 解析XML 实例这是一个例子，本文将基于这个xml 文件进行处理 &amp;lt;students&amp;gt;       &amp;lt;student no=&quot;2009081097&quot;&amp;gt;           &amp;lt;name nickname=&quot;apple&quot;&amp;gt;jack&amp;lt;/name&amp;gt">
+<meta name="keywords" content="python,xml,ElementTree">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python xml 文件处理">
+<meta property="og:url" content="https://evyang1992.github.io/2018/01/10/Python-xml-文件处理/index.html">
+<meta property="og:site_name" content="Eagle">
+<meta property="og:description" content="关于XML 的起源和发展参考：XML XML 学习参考： XML 学习 使用Python ElementTree 解析XML 实例这是一个例子，本文将基于这个xml 文件进行处理 &amp;lt;students&amp;gt;       &amp;lt;student no=&quot;2009081097&quot;&amp;gt;           &amp;lt;name nickname=&quot;apple&quot;&amp;gt;jack&amp;lt;/name&amp;gt">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-01-15T11:13:29.469Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python xml 文件处理">
+<meta name="twitter:description" content="关于XML 的起源和发展参考：XML XML 学习参考： XML 学习 使用Python ElementTree 解析XML 实例这是一个例子，本文将基于这个xml 文件进行处理 &amp;lt;students&amp;gt;       &amp;lt;student no=&quot;2009081097&quot;&amp;gt;           &amp;lt;name nickname=&quot;apple&quot;&amp;gt;jack&amp;lt;/name&amp;gt">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":true},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://evyang1992.github.io/2018/01/10/Python-xml-文件处理/"/>
+
+
+
+
+
+  <title>Python xml 文件处理 | Eagle</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Eagle</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">一个走偏了的汽车工程师</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://evyang1992.github.io/2018/01/10/Python-xml-文件处理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Devin Yang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eagle">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Python xml 文件处理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T09:33:51+01:00">
+                2018-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  653
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="关于XML-的起源和发展"><a href="#关于XML-的起源和发展" class="headerlink" title="关于XML 的起源和发展"></a>关于XML 的起源和发展</h2><p>参考：<a href="https://zh.wikipedia.org/wiki/XML" target="_blank" rel="noopener">XML</a></p>
+<h2 id="XML-学习"><a href="#XML-学习" class="headerlink" title="XML 学习"></a>XML 学习</h2><p>参考： <a href="http://www.w3school.com.cn/xml/" target="_blank" rel="noopener">XML 学习</a></p>
+<h2 id="使用Python-ElementTree-解析XML-实例"><a href="#使用Python-ElementTree-解析XML-实例" class="headerlink" title="使用Python ElementTree 解析XML 实例"></a>使用Python ElementTree 解析XML 实例</h2><p>这是一个例子，本文将基于这个xml 文件进行处理</p>
+<pre><code class="xml"><span class="tag">&lt;<span class="name">students</span>&gt;</span>  
+    <span class="tag">&lt;<span class="name">student</span> <span class="attr">no</span>=<span class="string">"2009081097"</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">name</span> <span class="attr">nickname</span>=<span class="string">"apple"</span>&gt;</span>jack<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">gender</span>&gt;</span>M<span class="tag">&lt;/<span class="name">gender</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">age</span> <span class="attr">updated</span>=<span class="string">"yes"</span>&gt;</span>89<span class="tag">&lt;/<span class="name">age</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">score</span> <span class="attr">subject</span>=<span class="string">"math"</span>&gt;</span>97<span class="tag">&lt;/<span class="name">score</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">score</span> <span class="attr">subject</span>=<span class="string">"chinese"</span>&gt;</span>90<span class="tag">&lt;/<span class="name">score</span>&gt;</span>  
+    <span class="tag">&lt;/<span class="name">student</span>&gt;</span>  
+    <span class="tag">&lt;<span class="name">student</span> <span class="attr">no</span>=<span class="string">"2009081098"</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">name</span> <span class="attr">nickname</span>=<span class="string">"apple"</span>&gt;</span>sunny<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">gender</span>&gt;</span>W<span class="tag">&lt;/<span class="name">gender</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">age</span> <span class="attr">updated</span>=<span class="string">"yes"</span>&gt;</span>90<span class="tag">&lt;/<span class="name">age</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">score</span> <span class="attr">subject</span>=<span class="string">"math"</span>&gt;</span>87<span class="tag">&lt;/<span class="name">score</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">score</span> <span class="attr">subject</span>=<span class="string">"chinese"</span>&gt;</span>96<span class="tag">&lt;/<span class="name">score</span>&gt;</span>  
+    <span class="tag">&lt;/<span class="name">student</span>&gt;</span>  
+    <span class="tag">&lt;<span class="name">student</span> <span class="attr">no</span>=<span class="string">"2009081099"</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">name</span> <span class="attr">nickname</span>=<span class="string">"apple"</span>&gt;</span>Anna<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">gender</span>&gt;</span>M<span class="tag">&lt;/<span class="name">gender</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">age</span> <span class="attr">updated</span>=<span class="string">"yes"</span>&gt;</span>88<span class="tag">&lt;/<span class="name">age</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">score</span> <span class="attr">subject</span>=<span class="string">"math"</span>&gt;</span>64<span class="tag">&lt;/<span class="name">score</span>&gt;</span>  
+        <span class="tag">&lt;<span class="name">score</span> <span class="attr">subject</span>=<span class="string">"chinese"</span>&gt;</span>98<span class="tag">&lt;/<span class="name">score</span>&gt;</span>  
+    <span class="tag">&lt;/<span class="name">student</span>&gt;</span>  
+<span class="tag">&lt;/<span class="name">students</span>&gt;</span>
+</code></pre>
+<p>在做处理之前，要清楚xml 文件基本要处理的内容是下面的几个：  </p>
+<ul>
+<li>节点： <name nickname="apple">jack</name>  就是一个节点，根节点就是最外面那个节点，比如这里的<students>。  </students></li>
+<li>属性：nickname 是元素的属性attrib。获取用get, 设定用set。</li>
+<li>文本内容：jack 是元素的text。读内容用.text。  </li>
+</ul>
+<p>接下来用代码来解释相关的操作：  </p>
+<pre><code class="py"><span class="string">'''</span>
+<span class="string">ElementTree 生来就是为了处理 XML ，它在 Python 标准库中有两种实现。一种是纯 Python 实现例如 xml.etree.ElementTree ，另外一种是速度快一点的 xml.etree.cElementTree 。你要记住： 尽量使用 C 语言实现的那种，因为它速度更快，而且消耗的内存更少。</span>
+<span class="string">一般使用下面的代码来导入。  </span>
+<span class="string">'''</span>
+<span class="keyword">try</span>:
+  <span class="keyword">import</span> xml.etree.cElementTree <span class="keyword">as</span> et
+<span class="keyword">except</span> ImportError:
+  <span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> et
+
+<span class="comment"># 解析文件  </span>
+parser = et.parse(<span class="string">"data.xml"</span>)
+
+<span class="comment"># 获取根节点  </span>
+root = parser.getroot()
+
+<span class="comment"># 获取标签名字  </span>
+print(root.tag)
+
+<span class="comment"># 获取属性  </span>
+attr = root.attrib
+
+<span class="comment"># 通过索引访问节点  </span>
+print(root[<span class="number">0</span>][<span class="number">0</span>].text)
+
+<span class="comment"># 查找根目录下面的子元素  </span>
+<span class="keyword">for</span> name <span class="keyword">in</span> root.findall(<span class="string">"student"</span>):  
+  <span class="comment"># 查找一个具体的元素  </span>
+  print(name.find(<span class="string">"age"</span>).get(<span class="string">"updated"</span>))
+  <span class="comment">#获取属性  </span>
+  print(name.get(<span class="string">"no"</span>))
+
+
+<span class="comment">#获取student元素  </span>
+<span class="comment">#更改student.age年龄  </span>
+<span class="comment">#获取name设置属性  </span>
+<span class="comment">#写入文档  </span>
+<span class="keyword">for</span> child <span class="keyword">in</span> root.iter(<span class="string">"student"</span>):  
+  new_age = int(child.find(<span class="string">"age"</span>).text)+<span class="number">10</span>
+  child.find(<span class="string">"age"</span>).text = str(new_age)
+  child.find(<span class="string">"name"</span>).set(<span class="string">"nickname"</span>,<span class="string">"apple"</span>)
+parser.write(<span class="string">"data.xml"</span>)
+
+<span class="comment">#查找根目录下面的子元素  </span>
+<span class="comment">#查找age  </span>
+<span class="comment">#如果大于age删除元素  </span>
+<span class="comment">#写入文档  </span>
+<span class="keyword">for</span> offspring <span class="keyword">in</span> root.findall(<span class="string">"student"</span>):  
+  age = int(offspring.find(<span class="string">"age"</span>).text)
+  <span class="keyword">if</span>(age &gt; <span class="number">60</span>):  
+    root.remove(offspring)
+parser.write(<span class="string">"data.xml"</span>)
+
+<span class="comment">#创建元素  </span>
+father = et.Element(<span class="string">"father"</span>)
+father.text = <span class="string">"Jason"</span>
+son = et.SubElement(father,<span class="string">"son"</span>) 
+son.text = <span class="string">"Lan"</span>  
+daughter=et.SubElement(father,<span class="string">"daughter"</span>) 
+daughter.text = <span class="string">"sunny"</span>    
+print(et.dump(father)) 
+exit()
+
+<span class="comment">#迭代属性  </span>
+<span class="keyword">for</span> child <span class="keyword">in</span> root:  
+  print((<span class="string">"iterator node name is {} , attr is {}"</span>).format)(child.tag,child.attrib) 
+
+<span class="keyword">for</span> student <span class="keyword">in</span> root.findall(<span class="string">'student'</span>):  
+  id = student.get(<span class="string">"no"</span>) 
+  name = student.find(<span class="string">"name"</span>).text  
+  print(id,name)  
+
+<span class="keyword">for</span> age <span class="keyword">in</span> root.iter(<span class="string">'age'</span>): 
+  new_age = int(age.text)+<span class="number">1</span>  
+  age.text = str(new_age)
+  age.set(<span class="string">'updated'</span>,<span class="string">'yes'</span>)  
+<span class="comment">#写入文件 用什么编码 是否要申明头部文件  </span>
+parser.write(<span class="string">"data.xml"</span>,encoding=<span class="string">"utf-8"</span>,xml_declaration=<span class="keyword">True</span>)
+
+<span class="keyword">for</span> name <span class="keyword">in</span> root.iter(<span class="string">"student"</span>):  
+  <span class="comment">#print name.tag</span>
+  print(name.attrib[<span class="string">"no"</span>])
+</code></pre>
+
+      
+    </div>
+    
+    
+    
+	
+	<div>
+	  
+		<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+	  
+	</div>
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"><i class="fa fa-tag"></i> python</a>
+          
+            <a href="/tags/xml/" rel="tag"><i class="fa fa-tag"></i> xml</a>
+          
+            <a href="/tags/ElementTree/" rel="tag"><i class="fa fa-tag"></i> ElementTree</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+          <div class="wp_rating">
+			<div style="color: rgba(0, 0, 0, 0.75); font-size:13px; letter-spacing:3px">(&gt;请对本文进行评分&lt;)</div>
+            <div id="wpac-rating"></div>
+          </div>
+        
+
+        
+
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/09/深度学习整体思路及主要问题引出/" rel="next" title="深度学习整体思路及主要问题引出">
+                <i class="fa fa-chevron-left"></i> 深度学习整体思路及主要问题引出
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/01/15/Python-logging-使用/" rel="prev" title="Python logging 使用">
+                Python logging 使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div class="comments" id="comments">
+      <div id="uyan_frame"></div>
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+      <div id="sidebar-dimmer"></div>
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Devin Yang</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+            <div class="feed-link motion-element">
+              <a href="/rss.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/EVYang1992" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:devin.yang.auto@gmail.com" target="_blank" title="Email">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>Email</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.zhihu.com/people/yang-yue-1992" target="_blank" title="ZhiHu">
+                      
+                        <i class="fa fa-fw fa-globe"></i>ZhiHu</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关于XML-的起源和发展"><span class="nav-number">1.</span> <span class="nav-text">关于XML 的起源和发展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XML-学习"><span class="nav-number">2.</span> <span class="nav-text">XML 学习</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Python-ElementTree-解析XML-实例"><span class="nav-number">3.</span> <span class="nav-text">使用Python ElementTree 解析XML 实例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2017 &mdash; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-car"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Devin Yang</span>
+
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+
+    
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2152266"></script>
+      <!-- UY END -->
+    
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+  <script type="text/javascript">
+  wpac_init = window.wpac_init || [];
+  wpac_init.push({widget: 'Rating', id: 9025#<app_id>,
+    el: 'wpac-rating',
+    color: 'fc6423'
+  });
+  (function() {
+    if ('WIDGETPACK_LOADED' in window) return;
+    WIDGETPACK_LOADED = true;
+    var mc = document.createElement('script');
+    mc.type = 'text/javascript';
+    mc.async = true;
+    mc.src = '//embed.widgetpack.com/widget.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+  })();
+  </script>
+
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=5.1.4"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=5.1.4"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="custom_mathjax_source">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
+
+
+  
+
+</body>
+</html>
